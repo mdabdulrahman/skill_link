@@ -16,7 +16,7 @@ function findNearestProviders(Providers) {
     const nearbyProviders = Providers.filter(provider => {
         const distance = getDistanceFromLatLonInKm(latitude, longitude, provider.latitude, provider.longitude);
         provider.distance = distance; // Add distance to provider object for debugging
-        return distance <= 80; // 5 km radius
+        return distance <= provider.available_distance; // 5 km radius
     });
     console.log("Nearby Providers: ", nearbyProviders.length);
     sendPushNotification(nearbyProviders);
@@ -28,7 +28,7 @@ async function sendPushNotification(nearbyProviders) {
             to: provider.push_token,
             title: requestData.request_title+",Service Seeker is "+provider.distance+" km away",
             body: requestData.request_description,
-            data: { requestId: requestData.request_id },
+            data: { type:"service_request",requestId: requestData.request_id },
             
         };
     });

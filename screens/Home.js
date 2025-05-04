@@ -21,7 +21,7 @@ export default function Home({ navigation }) {
     handleNotification: async () => ({
       shouldShowAlert: true,
       shouldPlaySound: true,
-      shouldSetBadge: false,
+      shouldSetBadge: true,
     }),
   });
   const [token, setToken] = useState(null);
@@ -93,11 +93,11 @@ useEffect(() => {
     <View style={styles.container}>
            
       {userData.role=="service_provider"?<ServiceProviderPage token={token} userData={userData} />:
-      <ServiceSeekerHome userData={userData} />
+      <ServiceSeekerHome userData={userData} token={token} />
       }
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
+     {/*  <TouchableOpacity style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Log Out</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
         
     </View>)}</>
   );

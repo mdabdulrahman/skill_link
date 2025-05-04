@@ -1,14 +1,40 @@
-import { View, Text, TouchableOpacity,Image } from 'react-native'
+import { View, Text, TouchableOpacity,Image,ScrollView } from 'react-native'
 import React, { useState,useEffect } from 'react'
 import { database,DATABASE_ID,COLLECTION_IDs } from '../AppWrite'
 import { Query } from 'react-native-appwrite'
 import { useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native'
-export default function OpenServiceRequests({userData}) {
+export default function OpenServiceRequestsProvider({userData}) {
 const navigation = useNavigation()
+const route = useRoute()
+if(!userData){
+  userData = route.params.userData
+}
 
+ const [OpenRequests, setOpenRequests] = useState([]);
+ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c; // Distance in km
+  return d;
+}
 
- const [OpenRequests, setOpenRequests] = useState([])
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+ let findRequestsWithinDistance =  (requests) => {
+           const nearbyRequests = requests.filter(request => {
+    const distance = getDistanceFromLatLonInKm(userData.latitude, userData.longitude, request.latitude, request.longitude);
+    return distance <= userData.available_distance; // Filter requests within 5 km radius
+           });
+           setOpenRequests(nearbyRequests);
+ }
  useEffect(() => {
     getOpenServiceRequests()
   }, [])
@@ -16,14 +42,13 @@ const navigation = useNavigation()
     // Fetch open service requests from the database
   
     try {
-      const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('requested_user',userData.userId),Query.equal('status', 'open')]);
-   
-      setOpenRequests(response.documents);
+      const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('service_type',userData.service_type),Query.equal('status', 'open')]);
+       
+      findRequestsWithinDistance(response.documents);
     } catch (error) {
-      console.error('Error fetching open service requests:--', error);
+      console.error('Error fetching open service requests:', error);
     }
   
- 
   };
  
   
@@ -39,26 +64,14 @@ const navigation = useNavigation()
     ac_technician: "AC Technician",
   };
   return (
+    <ScrollView>
     <View style={{
       width: '100%',}}>
-        <View style={{
-  flexDirection: 'row', alignItems:'flex-end'}}>
-            <Image source={require('../assets/icons/open.png')} style={{width: 60, height: 60}} />
-      <Text style={{
-  fontSize: 20,  // A bigger font size to make it stand out
-  fontWeight: 'bold',  // Bold for emphasis
-  color: '#333',  // Dark grey text color for a clean, professional look
- 
-  marginBottom: 10,  // Space below the text
- 
-}}>
-    {"\t"}Service Requests
-</Text>
-</View>
+     
       {OpenRequests.map((request) => (
    <TouchableOpacity
    key={request.request_id}
-   onPress={() => navigation.navigate('ViewServiceRequest', { request: request,userData:userData })}  // Navigate to the request details screen
+   onPress={() => navigation.navigate('ViewServiceRequestsProvider', { request: request,userData:userData })}  // Navigate to the request details screen
    style={{
        // White background for a clean look
      borderBottomWidth: 1,  // Only the bottom border
@@ -82,17 +95,10 @@ const navigation = useNavigation()
    </View>
  </TouchableOpacity>
  
-   
-   
-    
-    
-    
-     
-     
-     
      
       ))}
       {OpenRequests.length === 0 && <Text>No open service requests available.</Text>}
     </View>
+    </ScrollView>
   )
 }

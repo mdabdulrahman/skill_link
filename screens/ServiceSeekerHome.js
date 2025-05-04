@@ -1,56 +1,86 @@
 import React, { useState ,useEffect} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert,Image ,BackHandler} from 'react-native';
-import * as Location from 'expo-location';
-import { ID } from 'react-native-appwrite';
-import { database, DATABASE_ID, COLLECTION_IDs } from '../AppWrite'; // Adjust the import path as necessary
-import sendNotificationToNearby from '../utils/sendNotificationToNearby';
 import { StatusBar } from 'expo-status-bar';
 import Header from '../components/Header';
 import PostServiceRequestForm from './PostServiceRequestForm';
 import OpenServiceRequests from './OpenServiceRequests';
-export default function ServiceSeekerHome({userData}) {
+import { useNavigation } from '@react-navigation/native';
+import { database,DATABASE_ID,COLLECTION_IDs } from '../AppWrite';
+import * as Notifications from 'expo-notifications';
+import { ID } from 'react-native-appwrite';
+import { Query } from 'react-native-appwrite';
+export default function ServiceSeekerHome({userData,token}) {
 
-
+const navigation = useNavigation();
   const [currScreen, setCurrScreen] = useState('home');
 
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const backAction = () => {
-      setCurrScreen("home")
-      return true; // or false, depending on your needs
-    };
+  const getSenderData = async (senderId) => {
+    try {
+      const response = await database.getDocument(DATABASE_ID, COLLECTION_IDs.users, senderId);
+      
+      navigation.navigate("ChatScreen", { receiverData: response, senderData: userData });
+    } catch (error) {
+      console.error('Error fetching receiver data:', error);
+    }
+  }
+useEffect(() => {
+ 
+ /*  Notifications.addNotificationReceivedListener(notification => {
+    console.log("Notification received: ", notification);
+  }); */
+  Notifications.addNotificationResponseReceivedListener(response => {
+    
+    if( response.notification.request.content.data.type ==="message"){
+      getSenderData(response.notification.request.content.data.sender_id);
+    }
+   
+   //getReceiverData(response.notification.request.content.data.receiver_id);
+  });
+},[])
   
-    // Add the event listener
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-  
-    // Return cleanup function to remove event listener
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-    };
-  }, []);  // Empty dependency array means this effect only runs once on mount and cleanup happens on unmount
-  
+  const updateToken = async () => {
+    try {
+      await database.updateDocument(
+        DATABASE_ID,
+        COLLECTION_IDs.users,
+        userData.$id, // Use the document ID of the user
+        {
+          push_token: token,
+        }
+      );
+    } catch (error) {
+      console.error('Error updating token:', error);
+    }
+  }
+    useEffect(()=>{
+     
+     
+      updateToken();
+      
+      
+  },[])
   return (
     <>
-    <Header/>
+    <Header userData={userData}/>
     <StatusBar style='auto' />
 
-    { currScreen === "home"?(
+   
       <ScrollView>
     <View style={styles.container}>
       <Text style={styles.header}>👋Hello {userData.name} ,</Text>
       <View style={{ backgroundColor:"black", padding: 20, borderRadius: 10, marginBottom: 20 , marginTop: 20}}>
         <Text style={{fontSize:18,fontWeight:"bold",color:"white",fontFamily:"monospace"}}>Don’t search, just post!{"\n\n"}Experts are ready to assist you.</Text>
-        <TouchableOpacity style={styles.button} onPress={()=>setCurrScreen("postForm")} >
+        <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("PostServiceRequestForm",{userData:userData})} >
           <Image source={require('../assets/icons/send.png')} style={{ width: 20, height: 20, marginRight: 10 }} />
       <Text style={styles.buttonText}>Post & Find</Text>
     </TouchableOpacity>
       </View>
      <OpenServiceRequests userData={userData}/>
 
-      </View></ScrollView>):currScreen === "postForm"?(<PostServiceRequestForm userData={userData}/>)
-      :null
-}
+      </View></ScrollView>
+    
+
       </>
   );
 }

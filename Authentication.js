@@ -50,7 +50,7 @@ async function createAccount(navigation,form){
         await database.createDocument(
             DATABASE_ID,
             COLLECTION_IDs.users, 
-            ID.unique(), // Unique document ID
+            userid, // Unique document ID
             data,
           ).then(() => {
             Alert.alert('User created successfully!');
@@ -62,7 +62,19 @@ async function createAccount(navigation,form){
     
 }
 
-async function logOut(navigation){
+async function logOut(navigation,userId){
+    await database.updateDocument(
+        DATABASE_ID,
+        COLLECTION_IDs.users,
+        userId, // Use the document ID of the user
+        {
+          push_token: "", // Clear the push token on logout
+        }
+      ).then(() => {
+        console.log('Push token cleared successfully!');
+      }).catch((error) => {
+        console.error('Error clearing push token:', error);
+      });
     await account.deleteSessions().then((res)=>{
         console.log(res);
         navigation.replace('GetStarted'); // Navigate to Get Started screen after successful logout 

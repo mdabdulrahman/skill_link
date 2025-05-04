@@ -6,14 +6,17 @@ import { ID } from 'react-native-appwrite';
 import { database, DATABASE_ID, COLLECTION_IDs } from '../AppWrite'; // Adjust the import path as necessary
 import sendNotificationToNearby from '../utils/sendNotificationToNearby';
 import getCurrentDateTime from '../utils/getCurrentDateTime';
-
-export default function PostServiceRequestForm({userData}) {
+import Header from '../components/Header';
+import { StatusBar } from 'expo-status-bar';
+import { useRoute } from '@react-navigation/native';
+export default function PostServiceRequestForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [serviceType, setServiceType] = useState('');
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+  const route = useRoute();
+  const { userData } = route.params; // Get userData from route params
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -24,14 +27,14 @@ export default function PostServiceRequestForm({userData}) {
     const loc = await Location.getCurrentPositionAsync({});
     setLocation(loc.coords);
   };
-   const updateUserPostedRequest = async (requestId) => {
+/*    const updateUserPostedRequest = async (requestId) => {
     
       await database.updateDocument(
         DATABASE_ID,
         COLLECTION_IDs.users,
         userData.$id, // Use the document ID of the user
         {
-          posted_request_ids: [requestId], // Add the request ID to the user's posted requests
+          posted_requests: requestId, // Add the request ID to the user's posted requests
         }
       ).then(() => {
         console.log('User posted requests updated successfully!');
@@ -39,7 +42,7 @@ export default function PostServiceRequestForm({userData}) {
         console.error('Error updating user posted requests:', error);
       })
    
-   }
+   } */
   const handlePostRequest = async () => {
     if (!title || !description || !serviceType) {
       Alert.alert('Missing Fields', 'Please fill in all the fields.');
@@ -54,11 +57,10 @@ export default function PostServiceRequestForm({userData}) {
 
     const serviceRequest = {
       request_id: ID.unique(),
-      requested_user_id: userData.userId,    // Replace with actual user ID later
+      requested_user: userData.userId,    // Replace with actual user ID later
       request_title: title,
       request_description: description,
       service_type: serviceType,
-      proposal_ids: [],
       latitude: location.latitude,
       longitude: location.longitude,
       posted_datetime:getCurrentDateTime(),
@@ -74,7 +76,7 @@ export default function PostServiceRequestForm({userData}) {
                 serviceRequest,
               ).then(() => {
                 setLoading(false);
-                updateUserPostedRequest(serviceRequest.request_id); 
+                
                 sendNotificationToNearby(location.latitude, location.longitude, serviceRequest);
 
     Alert.alert('Success', 'Your service request has been posted!');
@@ -91,6 +93,9 @@ export default function PostServiceRequestForm({userData}) {
   };
 
   return (
+    <View style={{ paddingTop:20,backgroundColor:"#fff" }}>
+    <Header  userData={userData}/>
+    <StatusBar style='auto' />
     <ScrollView contentContainerStyle={styles.container}>
       
       <Text style={styles.header}> Service Request</Text>
@@ -139,12 +144,14 @@ export default function PostServiceRequestForm({userData}) {
         </Text>
       </TouchableOpacity>
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
+    padding: 20,
+   
     backgroundColor: '#f7f9fc',
     flexGrow: 1,
     justifyContent: 'center'
