@@ -1,21 +1,21 @@
-import {React,useState,useEffect} from 'react';
+import {React,useState,useEffect, use} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet ,ActivityIndicator} from 'react-native';
 import { account,database } from '../AppWrite';
 import { Query } from 'react-native-appwrite';
 import { COLLECTION_IDs, DATABASE_ID } from '../AppWrite';
 import { logOut } from '../Authentication';
 import { Alert } from 'react-native';
-import ServiceProviderPage from './ServiceProviderHome';
+import ServiceProviderPage from './serviceProvider/ServiceProviderHome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useContext } from 'react';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
-
+import { UserContext } from '../context/UserContext';
 import { registerForPushNotificationsAsync } from '../utils/registerForPushNotificationsAsync';
-import ServiceSeekerHome from './ServiceSeekerHome';
+import ServiceSeekerHome from './serviceSeeker/ServiceSeekerHome';
 import Header from '../components/Header';
 export default function Home({ navigation }) {
-  
+  const {setUserData} = useContext(UserContext);
 
  Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -27,32 +27,37 @@ export default function Home({ navigation }) {
   const [token, setToken] = useState(null);
 useEffect(() => {
   
-  registerForPushNotificationsAsync().then(async token => {
+/*   registerForPushNotificationsAsync().then(async token => {
     
    setToken(token);
   
-  });
-  const subscription = Notifications.addNotificationReceivedListener(notification => {
+  }); */
+  /* const subscription = Notifications.addNotificationReceivedListener(notification => {
     console.log(notification);
-  });
-  return () => subscription.remove(); // Clean up the subscription on unmount
+  }); */
+ /*  return () => subscription.remove(); */ // Clean up the subscription on unmount
 
 }, [])
 
-  const [userData, setUserData] = new useState(null);
+  
   let userid ; 
-  let getuserData = async()=>
+  let getuserData = async(pushtoken)=>
       {
           await account.get().then((response) => {
-    console.log('User data:', response);
+  
     userid = response.$id; // Get the user ID from the response
   }).catch((error) => {
     console.error('Error fetching user data:', error);
   }   );
   await database.listDocuments(DATABASE_ID, COLLECTION_IDs.users, [Query.equal('userId', userid)]).then((response) => {
-      console.log('User data:', response.documents[0]);
-      setUserData(response.documents[0]);
+      
+      let userData = response.documents[0];
       AsyncStorage.setItem("user_document_id", response.documents[0].$id);
+      userData.push_token = pushtoken;
+     
+      setUserData(userData);
+      if(userData.role == "service_provider") navigation.replace("ServiceProviderHome");
+      else navigation.replace("ServiceSeekerHome");
 
     }).catch((error) => {
       console.error('Error fetching user data:', error);
@@ -60,18 +65,22 @@ useEffect(() => {
     );
 }
     useEffect(() => {
-      const checkLoginStatus = async () => {
+      const checkLoginStatus = async (pushtoken) => {
         try {
           const response = await account.get();
-          console.log(response);
-          getuserData();
+         
+          getuserData(pushtoken);
         } catch (error) {
             navigation.replace('GetStarted'); // Navigate to GetStarted screen if user is logged in
-          console.log("no user found");
+          
         }
      
       };
-      checkLoginStatus();
+      registerForPushNotificationsAsync().then( pushtoken => {
+   
+        checkLoginStatus(pushtoken);
+       });
+    
 
       
      
@@ -87,19 +96,9 @@ useEffect(() => {
   };
 
   return (<>
-    {userData == null?(   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
       <ActivityIndicator size="large" color="#000" />
-    </View>):(
-    <View style={styles.container}>
-           
-      {userData.role=="service_provider"?<ServiceProviderPage token={token} userData={userData} />:
-      <ServiceSeekerHome userData={userData} token={token} />
-      }
-     {/*  <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Log Out</Text>
-      </TouchableOpacity> */}
-        
-    </View>)}</>
+    </View></>
   );
 }
 

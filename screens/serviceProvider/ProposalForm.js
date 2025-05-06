@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
 import { ID } from 'react-native-appwrite';
-import { database ,DATABASE_ID,COLLECTION_IDs} from '../AppWrite'; // Adjust the import path as necessary
-import getCurrentDateTime from '../utils/getCurrentDateTime';
+import { database ,DATABASE_ID,COLLECTION_IDs} from '../../AppWrite'; // Adjust the import path as necessary
+import getCurrentDateTime from '../../utils/getCurrentDateTime';
 import { useNavigation } from '@react-navigation/native';
 export default function ProposalForm({userData,request}) {
 
@@ -29,7 +29,7 @@ export default function ProposalForm({userData,request}) {
         },
         body: JSON.stringify(messages),
       }).then((response) => {
-        console.log("Push notification sent successfully: ", response);
+       
       } )
     }
   const handleSubmit = async () => {
@@ -49,7 +49,7 @@ export default function ProposalForm({userData,request}) {
       submitted_at:getCurrentDateTime(),
       proposed_user:userData.userId,
     };
-    console.log(data.proposal_id)
+   
    await database.createDocument(
       DATABASE_ID,
       COLLECTION_IDs.proposals,

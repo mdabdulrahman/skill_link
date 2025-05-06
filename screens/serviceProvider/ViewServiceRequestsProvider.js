@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet ,ScrollView,Image} from 'react
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { Linking } from 'react-native';
 import ProposalForm from './ProposalForm';
 export default function ViewServiceRequestsProvider() {
@@ -60,7 +60,7 @@ export default function ViewServiceRequestsProvider() {
         <Text style={styles.type}>{serviceTypes[request.service_type]}</Text>
         <Text style={styles.description}>{request.request_description}</Text>
         <TouchableOpacity style={{flexDirection:"row",alignItems:"center"}} onPress={() => navigation.navigate("UserProfile",{userData:request.requested_user})}>
-        <Image source={require("../assets/icons/user.png")} style={{width: 20, height: 20}} />
+        <Image source={require("../../assets/icons/user.png")} style={{width: 20, height: 20}} />
         <Text >{"\t"+request.requested_user.name}</Text>
         </TouchableOpacity>
         <Text style={styles.datetime}>Posted on: {convertDate(request.posted_datetime)}</Text>

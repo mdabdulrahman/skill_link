@@ -13,6 +13,7 @@ const COLLECTION_IDs={
     proposals:"680b8146002266653489",
     messages:"68175ddd000fb33c6be7",
     conversations:"68175e61000293fdcbe5",
+    reviews:"6814d76a0015671a2429"
 }
 
 export { client, account , database, DATABASE_ID, COLLECTION_IDs};

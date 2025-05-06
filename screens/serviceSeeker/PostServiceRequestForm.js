@@ -3,10 +3,10 @@ import { Picker } from '@react-native-picker/picker'; // Import the Picker compo
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import { ID } from 'react-native-appwrite';
-import { database, DATABASE_ID, COLLECTION_IDs } from '../AppWrite'; // Adjust the import path as necessary
-import sendNotificationToNearby from '../utils/sendNotificationToNearby';
-import getCurrentDateTime from '../utils/getCurrentDateTime';
-import Header from '../components/Header';
+import { database, DATABASE_ID, COLLECTION_IDs } from '../../AppWrite'; // Adjust the import path as necessary
+import sendNotificationToNearby from '../../utils/sendNotificationToNearby';
+import getCurrentDateTime from '../../utils/getCurrentDateTime';
+import Header from '../../components/Header';
 import { StatusBar } from 'expo-status-bar';
 import { useRoute } from '@react-navigation/native';
 export default function PostServiceRequestForm() {
@@ -67,7 +67,7 @@ export default function PostServiceRequestForm() {
       status: 'open',
     };
 
-    console.log('📤 Posting Service Request:', serviceRequest);
+  
 
      await database.createDocument(
                 DATABASE_ID,

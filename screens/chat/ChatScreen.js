@@ -6,7 +6,7 @@ import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { database,DATABASE_ID,COLLECTION_IDs,client } from '../../AppWrite';
 import { ID, Query } from 'react-native-appwrite';
 import getCurrentDateTime from '../../utils/getCurrentDateTime';
-
+import { Avatar } from 'react-native-paper';
 const ChatScreen = () => {
   const [messageText, setMessageText] = useState('');
   const navigation = useNavigation();
@@ -16,13 +16,13 @@ const ChatScreen = () => {
   
  
   const getChatHistory = async (userA, userB) => {
-    console.log("Sender ID: ", userA);
+   
     const messages = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.messages, [
       Query.or([
         Query.and([Query.equal('sender_id', userA), Query.equal('receiver_id', userB)]),
         Query.and([Query.equal('sender_id', userB), Query.equal('receiver_id', userA)]),
       ]),
-      Query.orderAsc('timestamp')
+      Query.orderDesc('timestamp')
     ])
     
     setMessages( messages.documents);
@@ -35,7 +35,7 @@ const ChatScreen = () => {
     client.subscribe(`databases.${DATABASE_ID}.collections.${COLLECTION_IDs.messages}.documents`, (response) => {
       if (response.events.includes('databases.*.collections.*.documents.*.create')) {
         if((response.payload.sender_id === receiverData.userId && response.payload.receiver_id === senderData.userId)){
-          setMessages([response.payload, ...messages]);
+          setMessages(prev=>[response.payload,...prev]);
         } 
       }}
      ) ;
@@ -68,7 +68,7 @@ const ChatScreen = () => {
           }
         ).then(
           ()=>{
-              console.log('Conversation Created:', messageText);
+              
               
         }
         )
@@ -84,13 +84,14 @@ const ChatScreen = () => {
           }
         ).then(
           ()=>{
-              console.log('Conversation Updated:', messageText);
+             
               
         }
         )
       }
     }
     async function sendPushNotification() {
+      
       const messages = {
               to: receiverData.push_token,
               title: "New Message from "+senderData.name,
@@ -107,7 +108,7 @@ const ChatScreen = () => {
           },
           body: JSON.stringify(messages),
         }).then((response) => {
-          console.log("Push notification sent successfully: ", response);
+          
         } )
       }
   const sendMessage = async() => {
@@ -131,7 +132,7 @@ const ChatScreen = () => {
             updateConversations();
             sendPushNotification();
             setMessages([newMessage, ...messages]);
-      console.log('Message Sent:', messageText);
+   
       setMessageText(''); 
 
         // Optionally, you can also send a push notification to the receiver here
@@ -146,9 +147,10 @@ const ChatScreen = () => {
 
   return (
     <View style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Chat with User {receiverData.name}</Text>
-      </View>
+     <View style={styles.header}>
+  <Avatar.Text size={40} label={receiverData.name[0]} style={styles.avatar} />
+  <Text style={styles.headerText}>{receiverData.name}</Text>
+</View>
 
       <FlatList
         data={messages}
@@ -179,63 +181,77 @@ const ChatScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#F9FAFB',
   },
   header: {
-    backgroundColor: '#6200EE',
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    elevation: 2,
+  },
+  avatar: {
+    backgroundColor: '#1F2937',
+    marginRight: 10,
   },
   headerText: {
-    fontSize: 20,
-    color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#111827',
+    fontWeight: '600',
   },
   messagesContainer: {
     flex: 1,
-    padding: 10,
+    padding: 12,
   },
   messageContainer: {
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 20,
+    padding: 12,
+    marginVertical: 6,
+    borderRadius: 16,
     maxWidth: '80%',
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+    elevation: 1,
   },
   senderMessage: {
-    backgroundColor: '#6200EE',
+    backgroundColor: '#DCFCE7',
     alignSelf: 'flex-end',
   },
   receiverMessage: {
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#E5E7EB',
     alignSelf: 'flex-start',
   },
   messageText: {
-    fontSize: 16,
-    color: '#fff',
+    fontSize: 15,
+    color: '#1F2937',
   },
   inputContainer: {
     flexDirection: 'row',
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: '#E5E7EB',
     alignItems: 'center',
   },
   textInput: {
     flex: 1,
-    height: 40,
+    height: 44,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 15,
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 16,
+    fontSize: 15,
+    color: '#111827',
   },
   sendButton: {
-    marginLeft: 10,
-    
-    borderRadius: 50,
-    padding: 10,
+   
+  
   },
 });
+
+
 
 export default ChatScreen;

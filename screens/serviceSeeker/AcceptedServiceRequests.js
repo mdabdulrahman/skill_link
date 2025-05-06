@@ -1,26 +1,26 @@
 import { View, Text, TouchableOpacity,Image } from 'react-native'
 import React, { useState,useEffect } from 'react'
-import { database,DATABASE_ID,COLLECTION_IDs } from '../AppWrite'
+import { database,DATABASE_ID,COLLECTION_IDs } from '../../AppWrite'
 import { Query } from 'react-native-appwrite'
 import { useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native'
-export default function OpenServiceRequests({userData}) {
+export default function AcceptedServiceRequests({userData}) {
 const navigation = useNavigation()
 
 
- const [OpenRequests, setOpenRequests] = useState([])
+ const [AcceptedRequests, setAcceptedRequests] = useState([])
  useEffect(() => {
-    getOpenServiceRequests()
+    getAcceptedServiceRequests()
   }, [])
-  const getOpenServiceRequests = async () => {
+  const getAcceptedServiceRequests = async () => {
     // Fetch open service requests from the database
   
     try {
-      const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('requested_user',userData.userId),Query.equal('status', 'open')]);
+      const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('requested_user',userData.userId),Query.equal('status', 'accepted')]);
    
-      setOpenRequests(response.documents);
+      setAcceptedRequests(response.documents);
     } catch (error) {
-      console.error('Error fetching open service requests:--', error);
+      console.error('Error fetching accepted service requests:--', error);
     }
   
  
@@ -42,8 +42,8 @@ const navigation = useNavigation()
     <View style={{
       width: '100%',}}>
         <View style={{
-  flexDirection: 'row', alignItems:'flex-end'}}>
-            <Image source={require('../assets/icons/open.png')} style={{width: 60, height: 60}} />
+  flexDirection: 'row', alignItems:'center', justifyContent:"center"}}>
+            <Image source={require('../../assets/icons/active-user.png')} style={{width: 35, height: 35,marginRight:10}} /> 
       <Text style={{
   fontSize: 20,  // A bigger font size to make it stand out
   fontWeight: 'bold',  // Bold for emphasis
@@ -52,13 +52,13 @@ const navigation = useNavigation()
   marginBottom: 10,  // Space below the text
  
 }}>
-    {"\t"}Service Requests
+    Ongoing{"\t"}Service Requests
 </Text>
 </View>
-      {OpenRequests.map((request) => (
+      {AcceptedRequests.map((request) => (
    <TouchableOpacity
    key={request.request_id}
-   onPress={() => navigation.navigate('ViewServiceRequest', { request: request,userData:userData })}  // Navigate to the request details screen
+   onPress={() => navigation.navigate('ViewAcceptedServiceRequest', { request: request,userData:userData })}  // Navigate to the request details screen
    style={{
        // White background for a clean look
      borderBottomWidth: 1,  // Only the bottom border
@@ -92,7 +92,7 @@ const navigation = useNavigation()
      
      
       ))}
-      {OpenRequests.length === 0 && <Text>No open service requests available.</Text>}
+      {AcceptedRequests.length === 0 && <Text>No accepted service requests available.</Text>}
     </View>
   )
 }

@@ -1,17 +1,25 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState ,useEffect, useContext} from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert,Image ,BackHandler} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import PostServiceRequestForm from './PostServiceRequestForm';
 import OpenServiceRequests from './OpenServiceRequests';
 import { useNavigation } from '@react-navigation/native';
-import { database,DATABASE_ID,COLLECTION_IDs } from '../AppWrite';
+import { database,DATABASE_ID,COLLECTION_IDs } from '../../AppWrite';
 import * as Notifications from 'expo-notifications';
 import { ID } from 'react-native-appwrite';
 import { Query } from 'react-native-appwrite';
-export default function ServiceSeekerHome({userData,token}) {
+import { useRoute } from '@react-navigation/native';
 
+import { UserContext } from '../../context/UserContext';
+import BottomTab from './BottomTab';
+import AcceptedServiceRequests from './AcceptedServiceRequests';
+
+export default function ServiceSeekerHome() {
 const navigation = useNavigation();
+
+const { userData} = useContext(UserContext);
+const token = userData.push_token;
   const [currScreen, setCurrScreen] = useState('home');
 
   const [loading, setLoading] = useState(false);
@@ -61,7 +69,7 @@ useEffect(() => {
       
   },[])
   return (
-    <>
+    <View style={{paddingTop:20,backgroundColor:"white",flex:1}}>
     <Header userData={userData}/>
     <StatusBar style='auto' />
 
@@ -72,16 +80,21 @@ useEffect(() => {
       <View style={{ backgroundColor:"black", padding: 20, borderRadius: 10, marginBottom: 20 , marginTop: 20}}>
         <Text style={{fontSize:18,fontWeight:"bold",color:"white",fontFamily:"monospace"}}>Don’t search, just post!{"\n\n"}Experts are ready to assist you.</Text>
         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("PostServiceRequestForm",{userData:userData})} >
-          <Image source={require('../assets/icons/send.png')} style={{ width: 20, height: 20, marginRight: 10 }} />
+          <Image source={require('../../assets/icons/send.png')} style={{ width: 20, height: 20, marginRight: 10 }} />
       <Text style={styles.buttonText}>Post & Find</Text>
     </TouchableOpacity>
       </View>
-     <OpenServiceRequests userData={userData}/>
-
-      </View></ScrollView>
+      <TouchableOpacity style={[styles.button,{marginHorizontal:"auto",marginBottom:20}]} onPress={()=>navigation.navigate("OpenServiceRequests")} >
+          
+      <Text style={styles.buttonText}>Open Posted Requests</Text>
+    </TouchableOpacity>
+      <AcceptedServiceRequests userData={userData}/>
     
 
-      </>
+      </View></ScrollView>
+  
+<BottomTab/>
+      </View>
   );
 }
 
@@ -92,7 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 20,
-   
+    
     justifyContent:"flex-start"
   },
   header: {

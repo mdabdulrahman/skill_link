@@ -63,6 +63,7 @@ async function createAccount(navigation,form){
 }
 
 async function logOut(navigation,userId){
+  
     await database.updateDocument(
         DATABASE_ID,
         COLLECTION_IDs.users,

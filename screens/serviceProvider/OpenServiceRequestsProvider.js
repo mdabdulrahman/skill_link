@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity,Image,ScrollView } from 'react-native'
 import React, { useState,useEffect } from 'react'
-import { database,DATABASE_ID,COLLECTION_IDs } from '../AppWrite'
+import { database,DATABASE_ID,COLLECTION_IDs } from '../../AppWrite'
 import { Query } from 'react-native-appwrite'
 import { useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native'

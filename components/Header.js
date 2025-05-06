@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
+import { IconButton } from 'react-native-paper';
 const Header = ({userData}) => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -9,12 +10,19 @@ const Header = ({userData}) => {
   return (
     <View style={styles.header}>
       <Text style={styles.title}>Skill Link</Text>
-      <TouchableOpacity onPress={()=>navigation.navigate("UserProfile",{userData:userData})} >
+    
+      <TouchableOpacity onPress={()=>{
+        if(userData.role=="service_seeker")
+        navigation.navigate("UserProfile",{userData:userData})
+      else navigation.navigate("ProviderProfile",{providerData:userData})
+        }} >
         <Image 
           source={require('../assets/icons/user.png')} 
           style={styles.profileIcon}
         />
+      
       </TouchableOpacity>
+     
     </View>
   );
 };

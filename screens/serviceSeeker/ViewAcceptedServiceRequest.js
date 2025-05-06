@@ -2,38 +2,41 @@ import { View, Text, TouchableOpacity, StyleSheet,Image,Button ,ScrollView} from
 import React, { use } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { Linking } from 'react-native';
 import { useEffect,useState } from 'react';
-import { database,DATABASE_ID,COLLECTION_IDs } from '../AppWrite';
+import { database,DATABASE_ID,COLLECTION_IDs } from '../../AppWrite';
 import { Query } from 'react-native-appwrite';
-export default function ViewServiceRequest() {
+export default function ViewAcceptedServiceRequest() {
   const route = useRoute();
   const navigation = useNavigation();
   const { request, userData } = route.params;
-  const [proposals, setProposals] = useState(request.proposals);
-  useEffect(() => {
-    console.log(request)
-  })
-
-
-  useEffect(() => {
-    const fetchProposals = async () => {
-      try {
-        const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.proposals, [Query.equal('request', request.$id)]);
-       console.log(response.documents)
-        setProposals(response.documents);
-      } catch (error) {
-        console.error('Error fetching proposals:', error);
-      }
-    };
-    fetchProposals();
-  },[])
+  
   const openMap = (lat, lng) => {
     const url = `https://www.google.com/maps?q=${lat},${lng}`;
     Linking.openURL(url);
   };
+  function sendPushNotification(token,proposal_id) {
+    const messages = 
+        {
+            to: token,
+            title: "Good News!, your proposal has been accepted",
+            body: request.request_title,
+            data: { type:"proposal_accepted",requestId: request.request_id,proposal_id:proposal_id },
+            priority: 'high',
+            
+        };
   
+  fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(messages),
+      })
+    }
   const serviceTypes = {
     mechanic: "Mechanic",
     plumber: "Plumber",
@@ -59,6 +62,7 @@ export default function ViewServiceRequest() {
   
     return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
   };
+ 
   return (
     <View style={styles.container}>
     
@@ -75,14 +79,8 @@ export default function ViewServiceRequest() {
         </TouchableOpacity>
       </View>
       </View>
-      <ScrollView>{
-        proposals.map((proposal) => {
-
-       
-     
-
-          return (
-      <View key={proposal.proposal_id} style={{
+      <ScrollView>
+      <View  style={{
       backgroundColor: '#fff',
       borderRadius: 12,
       padding: 16,
@@ -96,24 +94,24 @@ export default function ViewServiceRequest() {
       {/* User Info */}
       <TouchableOpacity 
         style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }} 
-        onPress={()=>navigation.navigate('UserProfile', { userData: proposal.proposed_user})}  // Navigate to the user profile screen
+        onPress={()=>navigation.navigate('UserProfile', { userData: request.accepted_proposal.proposed_user})}  // Navigate to the user profile screen
       >
-        <Image source={require("../assets/icons/user.png")} style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }} />
-        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{proposal.proposed_user.name}</Text>
+        <Image source={require("../../assets/icons/user.png")} style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }} />
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{request.accepted_proposal.proposed_user.name}</Text>
       </TouchableOpacity>
 
       {/* Estimated Amount */}
-      <Text style={{ color: '#666' }}>Estimated: ₹{proposal.est_min_amount} - ₹{proposal.est_max_amount}</Text>
+      <Text style={{ color: '#666' }}>Estimated: ₹{request.accepted_proposal.est_min_amount} - ₹{request.accepted_proposal.est_max_amount}</Text>
 
       {/* Bid Display */}
       <Text style={{ marginVertical: 8, fontSize: 16 }}>
-     {proposal.proposal_description}
+     {request.accepted_proposal.proposal_description}
       </Text>
-      <Button title="Chat" onPress={()=>navigation.navigate("ChatScreen",{receiverData:proposal.proposed_user,senderData:userData})}/>
-      {/* Accept Button */}
-      <Button title="Accept"/>
-    </View>)})}
+      <Button title="Chat" onPress={()=>navigation.navigate("ChatScreen",{receiverData:request.accepted_proposal.proposed_user,senderData:userData})}/>
+  
+    </View>
     </ScrollView>
+    <Button onPress={()=>navigation.navigate("FeedbackForm",{request:request,provider:request.accepted_proposal.proposed_user})} title="Mark as Completed" style={{margin:10}}/>
     </View>
   );
 }

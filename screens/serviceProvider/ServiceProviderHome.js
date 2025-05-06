@@ -1,16 +1,21 @@
 // ServiceProviderPage.js
-import React, {  useEffect, useState } from 'react';
+import React, {  useContext, useEffect, useState } from 'react';
 import { View, Text, Switch, StyleSheet,Image,TextInput,Button,Alert, TouchableOpacity,ScrollView } from 'react-native';
-import { startBackgroundLocation, stopBackgroundLocation } from '../locationService';
-import { database } from '../AppWrite';
-import Header from '../components/Header';
-import { COLLECTION_IDs, DATABASE_ID } from '../AppWrite'; // Adjust the import path as necessary
+import { startBackgroundLocation, stopBackgroundLocation } from '../../locationService';
+import { database } from '../../AppWrite';
+import Header from '../../components/Header';
+import { COLLECTION_IDs, DATABASE_ID } from '../../AppWrite'; // Adjust the import path as necessary
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
-import ViewServiceRequest from './ViewServiceRequest';
-const ServiceProviderPage = ({ userData,token }) => {
+import { useRoute } from '@react-navigation/native';
+import ViewServiceRequest from '../serviceSeeker/ViewServiceRequest';
+import { UserContext } from '../../context/UserContext';
+import BottomTab from './BottomTab';
+const ServiceProviderPage = () => {
   const navigation = useNavigation();
+  const {userData} = useContext(UserContext);
+  const token = userData.push_token;
   const [isAvailable, setIsAvailable] = useState(false);
   const [serviceRequests, setServiceRequests] = useState([]);
   const [availableDistance, setAvailableDistance] = useState(userData.available_distance); // Default distance in km
@@ -71,7 +76,7 @@ const updateToken = async () => {
 },[])
 const updateAvailableDistance = () => {
   const num = parseInt(availableDistance);
-  console.log(num)
+
   if (num >= 1 && num <= 15) {
     
     setAvailableDistance(num);
@@ -123,7 +128,7 @@ useEffect(() => {
   });
 },[])
   return (
-    <>
+    <View style={{paddingTop:20,backgroundColor:"white",flex:1}}>
        <Header userData={userData}/>
        <StatusBar style="auto" />
        <ScrollView >
@@ -172,11 +177,16 @@ useEffect(() => {
           <Text style={{ color: '#fff', fontSize: 16, textAlign: 'center' }}>View Open Service Requests</Text>
           </View>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('AcceptedServiceRequestsProvider', { userData: userData })}>
+        <View style={{ backgroundColor: '#007AFF', padding: 15, borderRadius: 10, marginTop: 20 }}>
+          <Text style={{ color: '#fff', fontSize: 16, textAlign: 'center' }}>Accepted Service Requests</Text>
+          </View>
+      </TouchableOpacity>
     </View>
     
     {isAvailable&&
     <View>
-    <Image source={require('../assets/gifs/radar.gif')} style={{width:150,height:150,alignSelf:'center',marginTop:20,borderRadius:75}}/>
+    <Image source={require('../../assets/gifs/radar.gif')} style={{width:150,height:150,alignSelf:'center',marginTop:20,borderRadius:75}}/>
     <Text style={{fontWeight:"bold",textAlign:"center", color:"grey",fontSize:19}}>You will receive notifications for service requests within {availableDistance} KM</Text>
   </View>}
 
@@ -218,7 +228,8 @@ useEffect(() => {
  
   </View>
   </ScrollView>
-  </>
+  <BottomTab />
+  </View>
   );
 };
 
