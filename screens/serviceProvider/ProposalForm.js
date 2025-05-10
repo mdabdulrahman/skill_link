@@ -9,6 +9,7 @@ export default function ProposalForm({userData,request}) {
   const [description, setDescription] = useState('');
   const [minAmount, setMinAmount] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
+  const navigation = useNavigation();
   function sendPushNotification(token,proposal_id) {
     const messages = 
         {
@@ -60,7 +61,7 @@ export default function ProposalForm({userData,request}) {
         Alert.alert('Proposal submitted successfully!');
       
         sendPushNotification(request.requested_user.push_token,data.proposal_id);
-        
+        navigation.navigate("ServiceProviderHome");
         // Optionally, navigate back or reset the form
       })
       .catch((error) => {

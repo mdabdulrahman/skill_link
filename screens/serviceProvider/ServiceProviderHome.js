@@ -16,7 +16,7 @@ const ServiceProviderPage = () => {
   const navigation = useNavigation();
   const {userData} = useContext(UserContext);
   const token = userData.push_token;
-  const [isAvailable, setIsAvailable] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(userData.isavailable);
   const [serviceRequests, setServiceRequests] = useState([]);
   const [availableDistance, setAvailableDistance] = useState(userData.available_distance); // Default distance in km
   const serviceTypes = {
@@ -38,7 +38,7 @@ async function updateDocumentAvailability() {
     {
       isavailable: isAvailable,
     }
-  );
+  )
 }
   useEffect(() => {
     if (isAvailable) {
@@ -103,6 +103,12 @@ const getServiceRequestData=async(request_id)=>{
     navigation.navigate('ViewServiceRequestsProvider', { request: response,userData:userData });
     });
 }
+const getAcceptedServiceRequestData=async(request_id)=>{
+  await database.getDocument(DATABASE_ID,COLLECTION_IDs.service_requests,request_id).then((response) => {
+   setServiceRequests([...serviceRequests,response])
+   navigation.navigate('ViewAcceptedServiceRequestProvider', { request: response,userData:userData });
+   });
+}
 const getSenderData = async (senderId) => {
     try {
       const response = await database.getDocument(DATABASE_ID, COLLECTION_IDs.users, senderId);
@@ -125,6 +131,8 @@ useEffect(() => {
    
    getServiceRequestData(response.notification.request.content.data.requestId);
   }
+  else if(response.notification.request.content.data.type ==="proposal_accepted"){
+    getAcceptedServiceRequestData(response.notification.request.content.data.requestId);}
   });
 },[])
   return (
@@ -132,7 +140,7 @@ useEffect(() => {
        <Header userData={userData}/>
        <StatusBar style="auto" />
        <ScrollView >
-       <View style={styles.container}>
+       <View style={[styles.container,{marginBottom:60}]}>
   
    
     <Text style={styles.header}>👋Greetings, {userData.name}! {"\n"}Ready for requests❓</Text>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Picker } from '@react-native-picker/picker'; // Import the Picker component
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import * as Location from 'expo-location';
@@ -8,15 +8,18 @@ import sendNotificationToNearby from '../../utils/sendNotificationToNearby';
 import getCurrentDateTime from '../../utils/getCurrentDateTime';
 import Header from '../../components/Header';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
+import { UserContext } from '../../context/UserContext';
 export default function PostServiceRequestForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [serviceType, setServiceType] = useState('');
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
   const route = useRoute();
-  const { userData } = route.params; // Get userData from route params
+  const { userData } = useContext(UserContext) // Get userData from route params
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -85,7 +88,7 @@ export default function PostServiceRequestForm() {
                 Alert.alert('Error creating document:', error.message);
               });
 
-   
+   navigation.navigate('ServiceSeekerHome'); // Navigate to the home screen after posting the request
     setTitle('');
     setDescription('');
     setServiceType('');

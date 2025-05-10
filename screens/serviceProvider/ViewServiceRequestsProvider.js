@@ -59,7 +59,7 @@ export default function ViewServiceRequestsProvider() {
         <Text style={styles.title}>{request.request_title}</Text>
         <Text style={styles.type}>{serviceTypes[request.service_type]}</Text>
         <Text style={styles.description}>{request.request_description}</Text>
-        <TouchableOpacity style={{flexDirection:"row",alignItems:"center"}} onPress={() => navigation.navigate("UserProfile",{userData:request.requested_user})}>
+        <TouchableOpacity style={{flexDirection:"row",alignItems:"center"}} >
         <Image source={require("../../assets/icons/user.png")} style={{width: 20, height: 20}} />
         <Text >{"\t"+request.requested_user.name}</Text>
         </TouchableOpacity>

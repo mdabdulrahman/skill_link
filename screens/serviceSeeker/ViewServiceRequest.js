@@ -101,8 +101,10 @@ export default function ViewServiceRequest() {
       });
 
       sendPushNotification(proposal.proposed_user.push_token,proposal.proposal_id)
+      navigation.navigate("ViewAcceptedServiceRequest", { request: { ...request, accepted_proposal: proposal }, userData });
   };
   return (
+    <ScrollView>
     <View style={styles.container}>
     
       <StatusBar style="dark" />
@@ -118,12 +120,8 @@ export default function ViewServiceRequest() {
         </TouchableOpacity>
       </View>
       </View>
-      <ScrollView>{
+     {
         proposals.map((proposal) => {
-
-       
-     
-
           return (
       <View key={proposal.proposal_id} style={{
       backgroundColor: '#fff',
@@ -152,12 +150,15 @@ export default function ViewServiceRequest() {
       <Text style={{ marginVertical: 8, fontSize: 16 }}>
      {proposal.proposal_description}
       </Text>
-      <Button title="Chat" onPress={()=>navigation.navigate("ChatScreen",{receiverData:proposal.proposed_user,senderData:userData})}/>
+      <View style={{flexDirection:"row",justifyContent:"space-evenly"}}>
+      <Button  title="Chat" onPress={()=>navigation.navigate("ChatScreen",{receiverData:proposal.proposed_user,senderData:userData})}/>
       {/* Accept Button */}
       <Button onPress={()=>acceptProposal(proposal)} title="Accept"/>
+        </View>
     </View>)})}
-    </ScrollView>
+   
     </View>
+    </ScrollView>
   );
 }
 

@@ -1,15 +1,19 @@
 import { View, Text, TouchableOpacity,Image,ScrollView } from 'react-native'
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import { database,DATABASE_ID,COLLECTION_IDs } from '../../AppWrite'
 import { Query } from 'react-native-appwrite'
 import { useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native'
-export default function OpenServiceRequestsProvider({userData}) {
+import { UserContext } from '../../context/UserContext'
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry'
+import * as Location from 'expo-location'
+import { Alert } from 'react-native'
+
+export default function OpenServiceRequestsProvider() {
 const navigation = useNavigation()
 const route = useRoute()
-if(!userData){
-  userData = route.params.userData
-}
+const {userData}=useContext(UserContext);
+
 
  const [OpenRequests, setOpenRequests] = useState([]);
  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -24,18 +28,31 @@ if(!userData){
   const d = R * c; // Distance in km
   return d;
 }
+const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Location permission is required to post a job.');
+      return;
+    }
 
+    const loc = await Location.getCurrentPositionAsync({});
+   return loc.coords;
+  };
 function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
- let findRequestsWithinDistance =  (requests) => {
+ let findRequestsWithinDistance =  async(requests) => {
+  let location = await getLocation();
+  console.log("User Location: ", location);
            const nearbyRequests = requests.filter(request => {
-    const distance = getDistanceFromLatLonInKm(userData.latitude, userData.longitude, request.latitude, request.longitude);
+    const distance = getDistanceFromLatLonInKm(location.latitude, location.longitude, request.latitude, request.longitude);
+  
     return distance <= userData.available_distance; // Filter requests within 5 km radius
            });
            setOpenRequests(nearbyRequests);
  }
  useEffect(() => {
+ 
     getOpenServiceRequests()
   }, [])
   const getOpenServiceRequests = async () => {
@@ -43,7 +60,7 @@ function deg2rad(deg) {
   
     try {
       const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('service_type',userData.service_type),Query.equal('status', 'open')]);
-       
+      
       findRequestsWithinDistance(response.documents);
     } catch (error) {
       console.error('Error fetching open service requests:', error);

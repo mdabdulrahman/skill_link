@@ -1,15 +1,27 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+
 export default function BottomTab() {
   const navigation = useNavigation();
+  
+
   return (
     <View style={styles.tabContainer}>
-
-      <TouchableOpacity style={styles.tabBox} onPress={() => navigation.navigate('Conversations')}>
-        <Ionicons name="chatbubble-ellipses-outline" size={28} color="black" />
+      <TouchableOpacity style={styles.tabBox} onPress={() => navigation.navigate('OpenServiceRequestsProvider')}>
+        <Ionicons name="open" size={26} color="green" />
+        <Text style={styles.label}>Requests</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.tabBox} onPress={() => navigation.replace('ServiceProviderHome')}>
+        <Ionicons name="home" size={26} color="" />
+        <Text style={styles.label}>Home</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabBox} onPress={() => navigation.navigate('Conversations')}>
+        <Ionicons name="chatbubble-ellipses" size={26} color="#333" />
+        <Text style={styles.label}>Chats</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 }
@@ -17,23 +29,23 @@ export default function BottomTab() {
 const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-   
-    backgroundColor: '#ffffff',
-   
-    paddingVertical: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10,
-    elevation: 6,
+    justifyContent: 'space-evenly',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: '#ddd',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 10,
   },
   tabBox: {
-    width: 50,
-    height: 50,
-    borderRadius: 15,
-   
-    justifyContent: 'center',
     alignItems: 'center',
+  },
+  label: {
+    fontSize: 12,
+    marginTop: 4,
+    color: '#333',
   },
 });

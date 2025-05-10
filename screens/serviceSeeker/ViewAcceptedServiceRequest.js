@@ -64,6 +64,7 @@ export default function ViewAcceptedServiceRequest() {
   };
  
   return (
+    <ScrollView >
     <View style={styles.container}>
     
       <StatusBar style="dark" />
@@ -113,6 +114,7 @@ export default function ViewAcceptedServiceRequest() {
     </ScrollView>
     <Button onPress={()=>navigation.navigate("FeedbackForm",{request:request,provider:request.accepted_proposal.proposed_user})} title="Mark as Completed" style={{margin:10}}/>
     </View>
+    </ScrollView>
   );
 }
 

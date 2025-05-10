@@ -1,17 +1,24 @@
-import React, { useEffect,useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import React, { use, useEffect,useState } from 'react';
+import { View, Text, FlatList, StyleSheet,TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { database, DATABASE_ID, COLLECTION_IDs } from '../AppWrite'; // Adjust the import path as necessary
 import { ID } from 'react-native-appwrite';
 import { Query } from 'react-native-appwrite';
+import { UserContext } from '../context/UserContext'; // Adjust the import path as necessary
+import { useContext } from 'react';
+import { logOut } from '../Authentication'; // Adjust the import path as necessary
 const ProviderProfile = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const {userData} = useContext(UserContext);
   const { providerData } = route.params; // Assuming provider data is passed as a parameter
   const [reviews, setReviews] = useState([]); 
-
+  const handleLogout = () => {
+    // logout logic here
+    logOut(navigation,userData.userId);
+  };
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -83,7 +90,12 @@ let calculateAverageRating = () => {
         renderItem={(item)=>renderReview(item)}
         keyExtractor={(item) => item.review_id}
         contentContainerStyle={styles.reviewList}
-      />
+      />{userData.userId==providerData.userId?
+       <View style={styles.bottom}>
+              <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                <Text style={styles.logoutText}>🚪 Log Out</Text>
+              </TouchableOpacity>
+            </View>:null}
     </View>
   );
 };
@@ -105,6 +117,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+  },
+  bottom: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logoutButton: {
+    backgroundColor: '#FF3B30',
+    paddingVertical: 12,
+    paddingHorizontal: 50,
+    borderRadius: 30,
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   userName: { fontWeight: 'bold', fontSize: 14 },
   comment: { fontSize: 14, marginTop: 2, color: '#444' },

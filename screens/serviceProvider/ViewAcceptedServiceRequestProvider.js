@@ -1,14 +1,16 @@
 import { View, Text, TouchableOpacity, StyleSheet ,ScrollView,Image,Button} from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import Header from '../../components/Header';
 import { Linking } from 'react-native';
 import ProposalForm from './ProposalForm';
+import { UserContext } from '../../context/UserContext';
 export default function ViewServiceRequestsProvider() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { request, userData } = route.params;
+  const { request} = route.params;
+  const { userData } = useContext(UserContext);
 
   const openMap = (lat, lng) => {
     const url = `https://www.google.com/maps?q=${lat},${lng}`;

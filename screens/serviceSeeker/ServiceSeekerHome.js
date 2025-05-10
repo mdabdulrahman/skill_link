@@ -32,6 +32,14 @@ const token = userData.push_token;
       console.error('Error fetching receiver data:', error);
     }
   }
+  const getRequestData = async (requestId) => {
+    try {
+      const response = await database.getDocument(DATABASE_ID, COLLECTION_IDs.service_requests, requestId);
+      navigation.navigate("ViewServiceRequest", { request: response, userData: userData });
+    } catch (error) {
+      console.error('Error fetching receiver data:', error);
+    }
+  }
 useEffect(() => {
  
  /*  Notifications.addNotificationReceivedListener(notification => {
@@ -41,6 +49,9 @@ useEffect(() => {
     
     if( response.notification.request.content.data.type ==="message"){
       getSenderData(response.notification.request.content.data.sender_id);
+    }
+    else if(response.notification.request.content.data.type ==="proposal"){
+      getRequestData(response.notification.request.content.data.requestId);
     }
    
    //getReceiverData(response.notification.request.content.data.receiver_id);
