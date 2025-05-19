@@ -1,0 +1,22 @@
+{
+    "sourceFile": "app.json",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1746868375419,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746873185008,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,8 @@\n {\n   \"expo\": {\n     \"plugins\": [\n       [\n-        \"expo-document-picker\"\n-      ],\n-      [\n         \"expo-dev-client\",\n         {\n           \"version\": \"5.0.20\"\n         }\n"
+                }
+            ],
+            "date": 1746868375419,
+            "name": "Commit-0",
+            "content": "{\n  \"expo\": {\n    \"plugins\": [\n      [\n        \"expo-document-picker\"\n      ],\n      [\n        \"expo-dev-client\",\n        {\n          \"version\": \"5.0.20\"\n        }\n      ],\n      [\n        \"expo-location\",\n        {\n          \"locationPermissionDescription\": \"This app uses your location to show nearby users.\"\n        }\n      ],\n      [\n        \"expo-notifications\",\n        {\n          \"icon\": \"./assets/icons/logo.png\",\n          \"color\": \"#ffffff\",\n          \"notificationChannelName\": \"default\"\n        }\n      ]\n    ],\n    \"name\": \"Skill Link\",\n    \"slug\": \"skill-link\",\n    \"version\": \"1.0.0\",\n    \"orientation\": \"portrait\",\n    \"icon\": \"./assets/icons/logo.png\",\n    \"userInterfaceStyle\": \"light\",\n    \"newArchEnabled\": true,\n    \"splash\": {\n      \"image\": \"./assets/icons/logo.png\",\n      \"resizeMode\": \"contain\",\n      \"backgroundColor\": \"#ffffff\"\n    },\n    \"ios\": {\n      \"supportsTablet\": true,\n      \"bundleIdentifier\": \"com.mdabdulrahman.skilllink\"\n    },\n    \"android\": {\n      \"permissions\": [\n        \"ACCESS_FINE_LOCATION\",\n        \"ACCESS_COARSE_LOCATION\",\n        \"ACCESS_BACKGROUND_LOCATION\",\n        \"FOREGROUND_SERVICE\"\n      ],\n      \"package\": \"com.mdabdulrahman.skilllink\",\n      \"googleServicesFile\": \"./google-services.json\",\n      \"adaptiveIcon\": {\n        \"foregroundImage\": \"./assets/icons/logo.png\",\n        \"backgroundColor\": \"#ffffff\"\n      }\n    },\n    \"web\": {\n      \"favicon\": \"./assets/favicon.png\"\n    },\n    \"extra\": {\n      \"eas\": {\n        \"projectId\": \"8fa0f426-f81a-49b8-8a5a-2667e6b787f9\"\n      }\n    },\n    \"owner\": \"mdabdulrahman\"\n  }\n}"
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "sourceFile": "screens/CheckFile.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1746858455263,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746859069676,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,20 @@\n+/* import { Button} from 'react-native'\r\n+import React from 'react'\r\n+import { pick } from '@react-native-documents/picker'\r\n+\r\n+export default function CheckFile() {\r\n+ return (\r\n+  <Button\r\n+    title=\"single file import\"\r\n+    onPress={async () => {\r\n+      try {\r\n+        const [pickResult] = await pick()\r\n+        // const [pickResult] = await pick({mode:'import'}) // equivalent\r\n+        // do something with the picked file\r\n+      } catch (error) {\r\n+        // see error handling\r\n+      }\r\n+    }}\r\n+  />\r\n+)\r\n+} */\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1746859158110,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,20 @@\n+import { Button} from 'react-native'\r\n+import React from 'react'\r\n+import { pick } from '@react-native-documents/picker'\r\n+\r\n+export default function CheckFile() {\r\n+ return (\r\n+  <Button\r\n+    title=\"single file import\"\r\n+    onPress={async () => {\r\n+      try {\r\n+        const [pickResult] = await pick()\r\n+        // const [pickResult] = await pick({mode:'import'}) // equivalent\r\n+        // do something with the picked file\r\n+      } catch (error) {\r\n+        // see error handling\r\n+      }\r\n+    }}\r\n+  />\r\n+)\r\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1746859203155,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,60 +1,10 @@\n-import { Button} from 'react-native'\r\n+import { View, Text } from 'react-native'\r\n import React from 'react'\r\n-import { pick } from '@react-native-documents/picker'\r\n \r\n export default function CheckFile() {\r\n- return (\r\n-  <Button\r\n-    title=\"single file import\"\r\n-    onPress={async () => {\r\n-      try {\r\n-        const [pickResult] = await pick()\r\n-        // const [pickResult] = await pick({mode:'import'}) // equivalent\r\n-        // do something with the picked file\r\n-      } catch (error) {\r\n-        // see error handling\r\n-      }\r\n-    }}\r\n-  />\r\n-)\r\n-}\n-/* import { Button} from 'react-native'\r\n-import React from 'react'\r\n-import { pick } from '@react-native-documents/picker'\r\n-\r\n-export default function CheckFile() {\r\n- return (\r\n-  <Button\r\n-    title=\"single file import\"\r\n-    onPress={async () => {\r\n-      try {\r\n-        const [pickResult] = await pick()\r\n-        // const [pickResult] = await pick({mode:'import'}) // equivalent\r\n-        // do something with the picked file\r\n-      } catch (error) {\r\n-        // see error handling\r\n-      }\r\n-    }}\r\n-  />\r\n-)\r\n-} */\n-import { Button} from 'react-native'\r\n-import React from 'react'\r\n-import { pick } from '@react-native-documents/picker'\r\n-\r\n-export default function CheckFile() {\r\n- return (\r\n-  <Button\r\n-    title=\"single file import\"\r\n-    onPress={async () => {\r\n-      try {\r\n-        const [pickResult] = await pick()\r\n-        // const [pickResult] = await pick({mode:'import'}) // equivalent\r\n-        // do something with the picked file\r\n-      } catch (error) {\r\n-        // see error handling\r\n-      }\r\n-    }}\r\n-  />\r\n-)\r\n+  return (\r\n+    <View>\r\n+      <Text>CheckFile</Text>\r\n+    </View>\r\n+  )\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1746864968782,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,33 @@\n+import { useState } from 'react';\r\n+import * as DocumentPicker from 'expo-document-picker';\r\n+\r\n+\r\n+\r\n+export default function CheckFile() {\r\n+    const [selectedDocuments, setSelectedDocuments] = useState();\r\n+  const pickDocuments = async (selectedDocuments, setSelectedDocuments) => {\r\n+  try {\r\n+    const result = await DocumentPicker.getDocumentAsync({\r\n+      type: '*/*', // optional\r\n+      copyToCacheDirectory: true,\r\n+    });\r\n+\r\n+    if (result.type === 'success') {\r\n+      if (selectedDocuments.length < 5) {\r\n+        setSelectedDocuments([...selectedDocuments, result]);\r\n+      } else {\r\n+        console.log('Maximum of 5 documents allowed.');\r\n+      }\r\n+    } else {\r\n+      console.log('Document selection cancelled.');\r\n+    }\r\n+  } catch (error) {\r\n+    console.log('Error picking documents:', error);\r\n+  }\r\n+};\r\n+  return (\r\n+    <View>\r\n+      <Text>CheckFile</Text>\r\n+    </View>\r\n+  )\r\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1746865033837,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,34 @@\n+import { useState } from 'react';\r\n+import * as DocumentPicker from 'expo-document-picker';\r\n+\r\n+import { View, Text, Button } from 'react-native';\r\n+\r\n+export default function CheckFile() {\r\n+    const [selectedDocuments, setSelectedDocuments] = useState();\r\n+  const pickDocuments = async () => {\r\n+  try {\r\n+    const result = await DocumentPicker.getDocumentAsync({\r\n+      type: '*/*', // optional\r\n+      copyToCacheDirectory: true,\r\n+    });\r\n+\r\n+    if (result.type === 'success') {\r\n+      if (selectedDocuments.length < 5) {\r\n+        setSelectedDocuments([...selectedDocuments, result]);\r\n+      } else {\r\n+        console.log('Maximum of 5 documents allowed.');\r\n+      }\r\n+    } else {\r\n+      console.log('Document selection cancelled.');\r\n+    }\r\n+  } catch (error) {\r\n+    console.log('Error picking documents:', error);\r\n+  }\r\n+};\r\n+  return (\r\n+    <View>\r\n+      <Text>CheckFile</Text>\r\n+      <Button title=\"Pick Document\" onPress={() => pickDocuments()} />\r\n+    </View>\r\n+  )\r\n+}\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1746858455263,
+            "name": "Commit-0",
+            "content": "import { Button} from 'react-native'\r\nimport React from 'react'\r\nimport { pick } from '@react-native-documents/picker'\r\n\r\nexport default function CheckFile() {\r\n return (\r\n  <Button\r\n    title=\"single file import\"\r\n    onPress={async () => {\r\n      try {\r\n        const [pickResult] = await pick()\r\n        // const [pickResult] = await pick({mode:'import'}) // equivalent\r\n        // do something with the picked file\r\n      } catch (error) {\r\n        // see error handling\r\n      }\r\n    }}\r\n  />\r\n)\r\n}"
+        }
+    ]
+}

@@ -1,5 +1,27 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-dev-client",
+        {
+          "version": "5.0.20"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationPermissionDescription": "This app uses your location to show nearby users."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icons/logo.png",
+          "color": "#ffffff",
+          "notificationChannelName": "default"
+        }
+      ]
+    ],
     "name": "Skill Link",
     "slug": "skill-link",
     "version": "1.0.0",

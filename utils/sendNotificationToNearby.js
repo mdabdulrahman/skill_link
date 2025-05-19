@@ -45,10 +45,30 @@ async function sendPushNotification(nearbyProviders) {
       } )
     }
 
+function getBoundingBox(lat, lon, distanceKm) {
+  const earthRadius = 6371; // in km
+
+  const deltaLat = distanceKm / earthRadius;
+  const deltaLon = distanceKm / (earthRadius * Math.cos((Math.PI * lat) / 180));
+
+  const minLat = lat - (deltaLat * 180) / Math.PI;
+  const maxLat = lat + (deltaLat * 180) / Math.PI;
+  const minLon = lon - (deltaLon * 180) / Math.PI;
+  const maxLon = lon + (deltaLon * 180) / Math.PI;
+
+  return {
+    minLat,
+    maxLat,
+    minLon,
+    maxLon,
+  };
+}
 
 async function getAllServiceProvidersLocation() {
 console.log("Fetching all service providers location...");
-    await database.listDocuments(DATABASE_ID, COLLECTION_IDs.users, [Query.equal('role', "service_provider"),Query.equal('service_type',requestData.service_type),Query.equal('isavailable',true)]).then((response) => {
+let boundingBox = getBoundingBox(latitude, longitude, 5); // 5 km radius
+    await database.listDocuments(DATABASE_ID, COLLECTION_IDs.users, [Query.equal('role', "service_provider"),Query.equal('service_type',requestData.service_type),Query.equal('isavailable',true)],
+    Query.between("latitude",boundingBox.minLat,boundingBox.maxLat),Query.between("longitude",boundingBox.minLon,boundingBox.maxLat) ).then((response) => {
         
         
         findNearestProviders(response.documents);

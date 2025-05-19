@@ -41,6 +41,25 @@ const getLocation = async () => {
 function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
+function getBoundingBox(lat, lon, distanceKm) {
+  const earthRadius = 6371; // in km
+
+  const deltaLat = distanceKm / earthRadius;
+  const deltaLon = distanceKm / (earthRadius * Math.cos((Math.PI * lat) / 180));
+
+  const minLat = lat - (deltaLat * 180) / Math.PI;
+  const maxLat = lat + (deltaLat * 180) / Math.PI;
+  const minLon = lon - (deltaLon * 180) / Math.PI;
+  const maxLon = lon + (deltaLon * 180) / Math.PI;
+
+  return {
+    minLat,
+    maxLat,
+    minLon,
+    maxLon,
+  };
+}
+
  let findRequestsWithinDistance =  async(requests) => {
   let location = await getLocation();
   console.log("User Location: ", location);
@@ -59,7 +78,8 @@ function deg2rad(deg) {
     // Fetch open service requests from the database
   
     try {
-      const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('service_type',userData.service_type),Query.equal('status', 'open')]);
+      let boundingBox = getBoundingBox(userData.latitude, userData.longitude, userData.available_distance);
+      const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('service_type',userData.service_type),Query.equal('status', 'open'),Query.between('latitude', boundingBox.minLat, boundingBox.maxLat),Query.between('longitude', boundingBox.minLon, boundingBox.maxLon)]);
       
       findRequestsWithinDistance(response.documents);
     } catch (error) {

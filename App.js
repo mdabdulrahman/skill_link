@@ -24,6 +24,7 @@ import OpenServiceRequests from './screens/serviceSeeker/OpenServiceRequests';
 import ViewAcceptedServiceRequest from './screens/serviceSeeker/ViewAcceptedServiceRequest';
 import AcceptedServiceRequestsProvider from './screens/serviceProvider/AcceptedServiceRequestsProvider';
 import ViewAcceptedServiceRequestProvider from './screens/serviceProvider/ViewAcceptedServiceRequestProvider';
+
 // Initialize the Stack navigator
 const Stack = createNativeStackNavigator();
 
@@ -40,8 +41,9 @@ const [userData, setUserData] = useState(null);
     
       <Stack.Navigator>
       
-   
+     
         <Stack.Screen name="Home" options={{ headerShown: false }} component={Home} />
+     {/*       <Stack.Screen name="CheckFile" options={{ headerShown: false }} component={CheckFile} /> */}
         <Stack.Screen name="PostServiceRequestForm" options={{ headerShown: false }} component={PostServiceRequestForm} />
         <Stack.Screen name="Conversations" options={{ headerShown: true,title:"Messages" }} component={Conversations} />
         <Stack.Screen name="ProviderProfile" options={{ headerShown: true,title:"Profile" }} component={ProviderProfile} />

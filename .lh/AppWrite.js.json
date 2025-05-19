@@ -1,0 +1,38 @@
+{
+    "sourceFile": "AppWrite.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1746869412253,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746869867949,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \r\n const client = new Client()\r\n     .setEndpoint('https://fra.cloud.appwrite.io/v1')\r\n     .setProject(process.env.APPWRITE_PROJECT_ID)\r\n-    .setPlatform('com.skill-link');\r\n+    \r\n     const account = new Account(client);\r\n const database = new Databases(client);\r\n const DATABASE_ID =\"6806faf500120a20c1d6\";\r\n const COLLECTION_IDs={\r\n"
+                },
+                {
+                    "date": 1746870106609,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { Client, Account,Databases } from 'react-native-appwrite';\r\n-\r\n+console.log(process.env.APPWRITE_PROJECT_ID);\r\n const client = new Client()\r\n     .setEndpoint('https://fra.cloud.appwrite.io/v1')\r\n     .setProject(process.env.APPWRITE_PROJECT_ID)\r\n     \r\n"
+                },
+                {
+                    "date": 1746870296350,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,10 @@\n import { Client, Account,Databases } from 'react-native-appwrite';\r\n+import APPWRITE_PROJECT_ID from '@env';\r\n console.log(process.env.APPWRITE_PROJECT_ID);\r\n const client = new Client()\r\n     .setEndpoint('https://fra.cloud.appwrite.io/v1')\r\n-    .setProject(process.env.APPWRITE_PROJECT_ID)\r\n+    .setProject(APPWRITE_PROJECT_ID)\r\n     \r\n     const account = new Account(client);\r\n const database = new Databases(client);\r\n const DATABASE_ID =\"6806faf500120a20c1d6\";\r\n"
+                },
+                {
+                    "date": 1746870310154,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { Client, Account,Databases } from 'react-native-appwrite';\r\n-import APPWRITE_PROJECT_ID from '@env';\r\n+import APPWRITE_PROJECT_ID from 'dotenv';\r\n console.log(process.env.APPWRITE_PROJECT_ID);\r\n const client = new Client()\r\n     .setEndpoint('https://fra.cloud.appwrite.io/v1')\r\n     .setProject(APPWRITE_PROJECT_ID)\r\n"
+                },
+                {
+                    "date": 1746870349607,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,10 @@\n import { Client, Account,Databases } from 'react-native-appwrite';\r\n-import APPWRITE_PROJECT_ID from 'dotenv';\r\n-console.log(process.env.APPWRITE_PROJECT_ID);\r\n+\r\n const client = new Client()\r\n     .setEndpoint('https://fra.cloud.appwrite.io/v1')\r\n-    .setProject(APPWRITE_PROJECT_ID)\r\n-    \r\n+    .setProject('6806eb4e001fc70cb2fe')\r\n+    .setPlatform('com.skill-link');\r\n     const account = new Account(client);\r\n const database = new Databases(client);\r\n const DATABASE_ID =\"6806faf500120a20c1d6\";\r\n const COLLECTION_IDs={\r\n"
+                }
+            ],
+            "date": 1746869412253,
+            "name": "Commit-0",
+            "content": "import { Client, Account,Databases } from 'react-native-appwrite';\r\n\r\nconst client = new Client()\r\n    .setEndpoint('https://fra.cloud.appwrite.io/v1')\r\n    .setProject(process.env.APPWRITE_PROJECT_ID)\r\n    .setPlatform('com.skill-link');\r\n    const account = new Account(client);\r\nconst database = new Databases(client);\r\nconst DATABASE_ID =\"6806faf500120a20c1d6\";\r\nconst COLLECTION_IDs={\r\n    users:\"6806fb06000ca2f461c9\",\r\n    service_requests:\"680a6ea20014effa5ac0\",\r\n    proposals:\"680b8146002266653489\",\r\n    messages:\"68175ddd000fb33c6be7\",\r\n    conversations:\"68175e61000293fdcbe5\",\r\n    reviews:\"6814d76a0015671a2429\"\r\n}\r\n\r\nexport { client, account , database, DATABASE_ID, COLLECTION_IDs};"
+        }
+    ]
+}
