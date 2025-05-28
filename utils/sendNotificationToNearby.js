@@ -66,7 +66,7 @@ function getBoundingBox(lat, lon, distanceKm) {
 
 async function getAllServiceProvidersLocation() {
 console.log("Fetching all service providers location...");
-let boundingBox = getBoundingBox(latitude, longitude, 5); // 5 km radius
+let boundingBox = getBoundingBox(latitude, longitude, 20); // 20 km radius
     await database.listDocuments(DATABASE_ID, COLLECTION_IDs.users, [Query.equal('role', "service_provider"),Query.equal('service_type',requestData.service_type),Query.equal('isavailable',true)],
     Query.between("latitude",boundingBox.minLat,boundingBox.maxLat),Query.between("longitude",boundingBox.minLon,boundingBox.maxLat) ).then((response) => {
         

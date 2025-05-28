@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1747648795444,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1748408621488,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -77,9 +77,9 @@\n   const getOpenServiceRequests = async () => {\r\n     // Fetch open service requests from the database\r\n   \r\n     try {\r\n-      let boundingBox = getBoundingBox(userData.latitude, userData.longitude, userData.available_distance);\r\n+      let boundingBox = getBoundingBox(userData.latitude, userData.longitude, 20);\r\n       const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('service_type',userData.service_type),Query.equal('status', 'open'),Query.between('latitude', boundingBox.minLat, boundingBox.maxLat),Query.between('longitude', boundingBox.minLon, boundingBox.maxLon)]);\r\n       \r\n       findRequestsWithinDistance(response.documents);\r\n     } catch (error) {\r\n"
                 }
             ],
             "date": 1747648795444,

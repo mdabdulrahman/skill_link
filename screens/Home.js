@@ -4,16 +4,14 @@ import { account,database } from '../AppWrite';
 import { Query } from 'react-native-appwrite';
 import { COLLECTION_IDs, DATABASE_ID } from '../AppWrite';
 import { logOut } from '../Authentication';
-import { Alert } from 'react-native';
-import ServiceProviderPage from './serviceProvider/ServiceProviderHome';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
 import * as Notifications from 'expo-notifications';
-import * as TaskManager from 'expo-task-manager';
+
 import { UserContext } from '../context/UserContext';
 import { registerForPushNotificationsAsync } from '../utils/registerForPushNotificationsAsync';
-import ServiceSeekerHome from './serviceSeeker/ServiceSeekerHome';
-import Header from '../components/Header';
+
 export default function Home({ navigation }) {
   const {setUserData} = useContext(UserContext);
 

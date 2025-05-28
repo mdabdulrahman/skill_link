@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1747649288590,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1748408518567,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -65,9 +65,9 @@\n }\r\n \r\n async function getAllServiceProvidersLocation() {\r\n console.log(\"Fetching all service providers location...\");\r\n-let boundingBox = getBoundingBox(latitude, longitude, 5); // 5 km radius\r\n+let boundingBox = getBoundingBox(latitude, longitude, 20); // 20 km radius\r\n     await database.listDocuments(DATABASE_ID, COLLECTION_IDs.users, [Query.equal('role', \"service_provider\"),Query.equal('service_type',requestData.service_type),Query.equal('isavailable',true)],\r\n     Query.between(\"latitude\",boundingBox.minLat,boundingBox.maxLat),Query.between(\"longitude\",boundingBox.minLon,boundingBox.maxLat) ).then((response) => {\r\n         \r\n         \r\n"
                 }
             ],
             "date": 1747649288590,

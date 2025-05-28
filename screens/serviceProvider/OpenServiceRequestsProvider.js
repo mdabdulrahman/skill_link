@@ -78,7 +78,7 @@ function getBoundingBox(lat, lon, distanceKm) {
     // Fetch open service requests from the database
   
     try {
-      let boundingBox = getBoundingBox(userData.latitude, userData.longitude, userData.available_distance);
+      let boundingBox = getBoundingBox(userData.latitude, userData.longitude, 20);
       const response = await database.listDocuments(DATABASE_ID, COLLECTION_IDs.service_requests, [Query.equal('service_type',userData.service_type),Query.equal('status', 'open'),Query.between('latitude', boundingBox.minLat, boundingBox.maxLat),Query.between('longitude', boundingBox.minLon, boundingBox.maxLon)]);
       
       findRequestsWithinDistance(response.documents);
